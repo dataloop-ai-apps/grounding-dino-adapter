@@ -1,0 +1,165 @@
+{
+    "name": "grounding-dino-adapter",
+    "displayName": "Grounding DINO",
+    "version": "0.1.52",
+    "scope": "project",
+    "description": "Grounding DINO Adapter",
+    "codebase": {
+        "type": "git",
+        "gitUrl": "https://github.com/dataloop-ai-apps/grounding-dino-adapter",
+        "gitTag": "0.1.52"
+    },
+    "attributes": {
+        "Provider": "IDEA-Research",
+        "License": "Apache 2.0",
+        "Category": "Model",
+        "Computer Vision": "Object Detection",
+        "Media Type": ["Image"],
+        "Deployed By": "Dataloop"
+    },
+    "components": {
+        "computeConfigs": [
+            {
+                "name": "grounding-dino-deploy",
+                "runtime": {
+                    "podType": "regular-s",
+                    "concurrency": 5,
+                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.6",
+                    "autoscaler": {
+                        "type": "rabbitmq",
+                        "minReplicas": 0,
+                        "maxReplicas": 2,
+                        "queueLength": 100
+                    }
+                }
+            },
+            {
+                "name": "grounding-dino-evaluate",
+                "runtime": {
+                    "podType": "gpu-t4",
+                    "concurrency": 1,
+                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.6",
+                    "autoscaler": {
+                        "type": "rabbitmq",
+                        "minReplicas": 0,
+                        "maxReplicas": 2,
+                        "queueLength": 100
+                    }
+                }
+            }
+        ],
+        "modules": [
+            {
+                "name": "grounding-dino-module",
+                "entryPoint": "model_adapter.py",
+                "className": "Adapter",
+                "computeConfig": "grounding-dino-deploy",
+                "description": "Grounding DINO Module",
+                "initInputs": [
+                    {
+                        "type": "Model",
+                        "name": "model_entity"
+                    }
+                ],
+                "functions": [
+                    {
+                        "name": "evaluate_model",
+                        "computeConfig": "grounding-dino-evaluate",
+                        "input": [
+                            {
+                                "type": "Model",
+                                "name": "model",
+                                "description": "Dataloop Model Entity"
+                            },
+                            {
+                                "type": "Dataset",
+                                "name": "dataset",
+                                "description": "Dataloop Dataset Entity"
+                            },
+                            {
+                                "type": "Json",
+                                "name": "filters",
+                                "description": "Dataloop Filter DQL"
+                            }
+                        ],
+                        "output": [
+                            {
+                                "type": "Model",
+                                "name": "model",
+                                "description": "Dataloop Model Entity"
+                            },
+                            {
+                                "type": "Dataset",
+                                "name": "dataset",
+                                "description": "Dataloop Dataset Entity"
+                            }
+                        ],
+                        "displayName": "Evaluate a Model",
+                        "displayIcon": "",
+                        "description": "Function to evaluate SAM2 model performance"
+                    },
+                    {
+                        "name": "predict_items",
+                        "input": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "List of items to run inference on"
+                            }
+                        ],
+                        "output": [
+                            {
+                                "type": "Item[]",
+                                "name": "items",
+                                "description": "The same input images for prediction."
+                            },
+                            {
+                                "type": "Annotation[]",
+                                "name": "annotations",
+                                "description": "The predicted annotations."
+                            }
+                        ],
+                        "displayName": "Predict Items",
+                        "displayIcon": "",
+                        "description": "Function to run SAM2 inference on items"
+                    },
+                    {
+                        "name": "predict_dataset",
+                        "input": [
+                            {
+                                "type": "Dataset",
+                                "name": "dataset",
+                                "description": ""
+                            },
+                            {
+                                "type": "Json",
+                                "name": "filters",
+                                "description": "Dataloop Filter DQL"
+                            }
+                        ],
+                        "output": [],
+                        "displayName": "Predict Dataset",
+                        "displayIcon": "",
+                        "description": "Function to run Grounding DINO inference on a dataset"
+                    }
+                ]
+            }
+        ],
+        "models": [
+            {
+                "name": "grounding-dino",
+                "moduleName": "grounding-dino-module",
+                "scope": "project",
+                "status": "pre-trained",
+                "inputType": "image",
+                "outputType": "box",
+                "description": "Grounding DINO Model",
+                "labels": ["person", "dog", "cat"],
+                "configuration": {
+                    "box_threshold": 0.35,
+                    "text_threshold": 0.25
+                }
+            }
+        ]
+    }
+}
