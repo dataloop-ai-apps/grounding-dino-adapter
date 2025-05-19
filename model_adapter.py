@@ -28,17 +28,15 @@ class Adapter(dl.BaseModelAdapter):
         self.model = model
 
     def prepare_item_func(self, item):
-        return item
+        image_source, image = load_image(item.download(overwrite=True))
+        return image_source, image, item
 
     def predict(self, batch, **kwargs):
         box_threshold = self.model_entity.configuration.get('box_threshold', 0.35)
         text_threshold = self.model_entity.configuration.get('text_threshold', 0.25)
 
         batch_annotations = list()
-        for item in batch:
-            item: dl.Item
-            image_source, image = load_image(item.download(overwrite=True))
-
+        for image_source, image, item in batch:
             model_labels = list(self.model_entity.label_to_id_map.keys())
             if len(model_labels) > 0:
                 text_prompt = ' . '.join(model_labels)
