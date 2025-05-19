@@ -21,5 +21,6 @@ if __name__ == "__main__":
     adapter = Adapter(
         model_entity=model_entity,
     )
-    batch_annotations = adapter.predict([item])
+    batch = adapter.prepare_item_func(item)
+    batch_annotations = adapter.predict([batch])
     item.annotations.upload(batch_annotations[0])
