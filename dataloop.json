@@ -1,13 +1,13 @@
 {
     "name": "grounding-dino-adapter",
     "displayName": "Grounding DINO",
-    "version": "0.1.52",
+    "version": "0.1.53",
     "scope": "project",
     "description": "Grounding DINO Adapter",
     "codebase": {
         "type": "git",
         "gitUrl": "https://github.com/dataloop-ai-apps/grounding-dino-adapter",
-        "gitTag": "0.1.52"
+        "gitTag": "0.1.53"
     },
     "attributes": {
         "Provider": "IDEA-Research",
