@@ -2,7 +2,7 @@
     "name": "grounding-dino-adapter",
     "displayName": "Grounding DINO",
     "version": "0.1.53",
-    "scope": "project",
+    "scope": "public",
     "description": "Grounding DINO Adapter",
     "codebase": {
         "type": "git",
@@ -24,7 +24,7 @@
                 "runtime": {
                     "podType": "regular-s",
                     "concurrency": 5,
-                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.6",
+                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.7",
                     "autoscaler": {
                         "type": "rabbitmq",
                         "minReplicas": 0,
@@ -38,7 +38,7 @@
                 "runtime": {
                     "podType": "gpu-t4",
                     "concurrency": 1,
-                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.6",
+                    "runnerImage": "dataloop_runner-apps/grounding-dino-adapter:0.1.7",
                     "autoscaler": {
                         "type": "rabbitmq",
                         "minReplicas": 0,
