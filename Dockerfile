@@ -1,4 +1,4 @@
-FROM dataloopai/dtlpy-agent:cpu.py3.10.pytorch2
+FROM hub.dataloop.ai/dtlpy-runner-images/cpu:python3.10_pytorch2
 
 USER root
 RUN apt update && apt install -y curl
